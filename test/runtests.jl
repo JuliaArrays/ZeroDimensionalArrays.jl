@@ -1,6 +1,6 @@
 using ZeroDimensionalArrays
 using Test
-using Aqua
+using Aqua: Aqua
 
 @testset "ZeroDimensionalArrays.jl" begin
     @testset "Code quality (Aqua.jl)" begin
