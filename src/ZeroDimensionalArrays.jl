@@ -1,6 +1,7 @@
 module ZeroDimensionalArrays
 
 export
+    wrap_in_0dim,
     ZeroDimensionalArrayImmutable,
     ZeroDimensionalArrayMutable,
     ZeroDimensionalArrayMutableConstField
@@ -27,6 +28,10 @@ mutable struct ZeroDimensionalArrayMutableConstField{T} <: AbstractArray{T, 0}
     global function new_zero_dimensional_array_mutable_const_field(::Type{T}, v) where {T}
         new{T}(v)
     end
+end
+
+function wrap_in_0dim(v)
+    new_zero_dimensional_array_immutable(typeof(v), v)
 end
 
 const ZeroDimensionalArray = Union{
