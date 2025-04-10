@@ -35,12 +35,6 @@ const ZeroDimensionalArray = Union{
     ZeroDimensionalArrayMutableConstField,
 }
 
-const ZeroDimensionalArrayConstructorFunction = Union{
-    typeof(new_zero_dimensional_array_immutable),
-    typeof(new_zero_dimensional_array_mutable),
-    typeof(new_zero_dimensional_array_mutable_const_field),
-}
-
 function type_to_constructor_function(::Type{T}) where {T <: ZeroDimensionalArray}
     if T <: ZeroDimensionalArrayImmutable
         new_zero_dimensional_array_immutable
