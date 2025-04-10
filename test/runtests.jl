@@ -39,6 +39,7 @@ using Aqua: Aqua
             @test @isdefined ZeroDimensionalArrayImmutable
             @test !ismutabletype(ZeroDimensionalArrayImmutable)
             @test isbitstype(ZeroDimensionalArrayImmutable{Float64})
+            @test ZeroDimensionalArrayImmutable(fill(7)) === @inferred wrap_in_0dim(7)
         end
         @testset "`ZeroDimensionalArrayMutable`" begin
             @test @isdefined ZeroDimensionalArrayMutable
