@@ -3,7 +3,7 @@ module ZeroDimensionalArrays
 export
     ZeroDimArray,
     Box,
-    BoxConstField
+    BoxConst
 
 struct ZeroDimArray{T} <: AbstractArray{T, 0}
     v::T
@@ -22,7 +22,7 @@ mutable struct Box{T} <: AbstractArray{T, 0}
     end
 end
 
-mutable struct BoxConstField{T} <: AbstractArray{T, 0}
+mutable struct BoxConst{T} <: AbstractArray{T, 0}
     const v::T
     global function new_zero_dimensional_array_mutable_const_field(::Type{T}, v) where {T}
         new{T}(v)
@@ -32,7 +32,7 @@ end
 const ZeroDimensionalArray = Union{
     ZeroDimArray,
     Box,
-    BoxConstField,
+    BoxConst,
 }
 
 function type_to_constructor_function(::Type{T}) where {T <: ZeroDimensionalArray}
@@ -40,7 +40,7 @@ function type_to_constructor_function(::Type{T}) where {T <: ZeroDimensionalArra
         new_zero_dimensional_array_immutable
     elseif T <: Box
         new_zero_dimensional_array_mutable
-    elseif T <: BoxConstField
+    elseif T <: BoxConst
         new_zero_dimensional_array_mutable_const_field
     else
         throw(ArgumentError("no such constructor function"))
@@ -102,7 +102,7 @@ end
 for Arr ∈ (
     ZeroDimArray,
     Box,
-    BoxConstField,
+    BoxConst,
 )
     @eval begin
         function Base.convert(::Type{$Arr}, a::AbstractArray{<:Any, 0})

@@ -17,7 +17,7 @@ Exports these zero-dimensional subtypes of `AbstractArray`, differing on topics 
     * declared with `mutable struct`
     * supports `setfield!` for mutating the element
     * acts as a reference to its element
-* `BoxConstField`
+* `BoxConst`
     * declared with `mutable struct`
     * does not support `setfield!`, or mutating the element otherwise
     * acts as a reference to its element
@@ -48,7 +48,7 @@ The motivation for creating this package is:
     * previous discussion:
         * https://github.com/JuliaLang/julia/issues/40369
         * https://discourse.julialang.org/t/dynamic-immutable-type/127168
-* To provide a [*boxing*](https://en.wikipedia.org/wiki/Boxing_(computer_programming)) feature, for example for data deduplication to avoid excessive memory use. Either `Box` or `BoxConstField` might be a good choice here, depending on whether mutability is desired. Compare:
+* To provide a [*boxing*](https://en.wikipedia.org/wiki/Boxing_(computer_programming)) feature, for example for data deduplication to avoid excessive memory use. Either `Box` or `BoxConst` might be a good choice here, depending on whether mutability is desired. Compare:
     * ```julia-repl
       julia> large_data = ntuple(identity, 8)
       (1, 2, 3, 4, 5, 6, 7, 8)
@@ -87,7 +87,7 @@ The motivation for creating this package is:
        0
        0
       ```
-      The other types, `Box` or `BoxConstField` would work for this use case, too, as would any zero-dimensional array, but `ZeroDimArray` is more likely to have zero cost for performance.
+      The other types, `Box` or `BoxConst` would work for this use case, too, as would any zero-dimensional array, but `ZeroDimArray` is more likely to have zero cost for performance.
     * previous discussion regarding `Ref`:
         * https://discourse.julialang.org/t/ref-vs-zero-dimensional-arrays/24434
 
