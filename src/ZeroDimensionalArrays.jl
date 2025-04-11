@@ -116,7 +116,7 @@ for Arr ∈ (
     end
 end
 
-function ZeroDimensionalArrayMutable{T}(::UndefInitializer, ::Tuple{} = ()) where {T}
+function ZeroDimensionalArrayMutable{T}() where {T}
     new_zero_dimensional_array_mutable_undef(T)
 end
 
