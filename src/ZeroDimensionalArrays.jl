@@ -1,7 +1,6 @@
 module ZeroDimensionalArrays
 
 export
-    wrap_in_0dim,
     ZeroDimensionalArrayImmutable,
     ZeroDimensionalArrayMutable,
     ZeroDimensionalArrayMutableConstField
@@ -28,10 +27,6 @@ mutable struct ZeroDimensionalArrayMutableConstField{T} <: AbstractArray{T, 0}
     global function new_zero_dimensional_array_mutable_const_field(::Type{T}, v) where {T}
         new{T}(v)
     end
-end
-
-function wrap_in_0dim(v)
-    new_zero_dimensional_array_immutable(typeof(v), v)
 end
 
 const ZeroDimensionalArray = Union{
@@ -84,10 +79,19 @@ function Base.only(a::ZeroDimensionalArray)
     a[]
 end
 
-function convert_from_other_array_to_given_eltype(::Type{Arr}, ::Type{T}, a::AbstractArray{<:Any, 0}) where {Arr <: ZeroDimensionalArray, T}
-    v = a[]
+function construct_given_eltype(::Type{Arr}, ::Type{T}, v) where {Arr <: ZeroDimensionalArray, T}
     c = type_to_constructor_function(Arr)
     c(T, v)
+end
+
+function construct(::Type{Arr}, v) where {Arr <: ZeroDimensionalArray}
+    T = typeof(v)
+    construct_given_eltype(Arr, T, v)
+end
+
+function convert_from_other_array_to_given_eltype(::Type{Arr}, ::Type{T}, a::AbstractArray{<:Any, 0}) where {Arr <: ZeroDimensionalArray, T}
+    v = a[]
+    construct_given_eltype(Arr, T, v)
 end
 
 function convert_from_other_array(::Type{Arr}, a::AbstractArray{<:Any, 0}) where {Arr <: ZeroDimensionalArray}
@@ -107,11 +111,11 @@ for Arr ∈ (
         function Base.convert(::Type{$Arr{T}}, a::AbstractArray{<:Any, 0}) where {T}
             convert_from_other_array_to_given_eltype($Arr, T, a)
         end
-        function (::Type{$Arr})(a::AbstractArray{<:Any, 0})
-            convert_from_other_array($Arr, a)
+        function (::Type{$Arr})(v)
+            construct($Arr, v)
         end
-        function (::Type{$Arr{T}})(a::AbstractArray{<:Any, 0}) where {T}
-            convert_from_other_array_to_given_eltype($Arr, T, a)
+        function (::Type{$Arr{T}})(v) where {T}
+            construct_given_eltype($Arr, T, v)
         end
     end
 end
