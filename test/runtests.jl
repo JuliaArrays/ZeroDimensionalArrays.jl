@@ -26,6 +26,7 @@ using Aqua: Aqua
             @test @inferred isassigned(Arr(fill(0.3)))
             @test @inferred isassigned(Arr(fill(0.3)), 1)
             @test !(isassigned(Arr(fill(0.3)), 2))
+            @test (@inferred similar(Arr(fill(0.3)))) isa ZeroDimensionalArrayMutable{Float64}
             @test (@inferred similar(Arr(fill(0.3)), Float32)) isa ZeroDimensionalArrayMutable{Float32}
             @test fill(0.3) == Arr(fill(0.3))
             @test Arr(fill(0.3)) == Arr(fill(0.3))
