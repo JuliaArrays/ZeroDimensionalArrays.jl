@@ -9,7 +9,7 @@ using Aqua: Aqua
 
     @testset "all array types joined" begin
         for Arr ∈ (
-            ZeroDimensionalArrayImmutable,
+            ZeroDimArray,
             Box,
             BoxConstField,
         )
@@ -37,10 +37,10 @@ using Aqua: Aqua
     end
 
     @testset "each array type on its own" begin
-        @testset "`ZeroDimensionalArrayImmutable`" begin
-            @test @isdefined ZeroDimensionalArrayImmutable
-            @test !ismutabletype(ZeroDimensionalArrayImmutable)
-            @test isbitstype(ZeroDimensionalArrayImmutable{Float64})
+        @testset "`ZeroDimArray`" begin
+            @test @isdefined ZeroDimArray
+            @test !ismutabletype(ZeroDimArray)
+            @test isbitstype(ZeroDimArray{Float64})
         end
         @testset "`Box`" begin
             @test @isdefined Box
