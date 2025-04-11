@@ -45,8 +45,7 @@ using Aqua: Aqua
         @testset "`ZeroDimensionalArrayMutable`" begin
             @test @isdefined ZeroDimensionalArrayMutable
             @test ismutabletype(ZeroDimensionalArrayMutable)
-            @test (@inferred ZeroDimensionalArrayMutable{Float32}(undef)) isa ZeroDimensionalArrayMutable{Float32}
-            @test (@inferred ZeroDimensionalArrayMutable{Float32}(undef, ())) isa ZeroDimensionalArrayMutable{Float32}
+            @test (@inferred ZeroDimensionalArrayMutable{Float32}()) isa ZeroDimensionalArrayMutable{Float32}
             @test let a = ZeroDimensionalArrayMutable(fill(0.3))
                 a[] = 0.7
                 only(a) === 0.7
