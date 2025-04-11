@@ -75,6 +75,13 @@ function Base.only(a::ZeroDimensionalArray)
     a[]
 end
 
+function Base.iterate(a::ZeroDimensionalArray)
+    (a[], nothing)
+end
+Base.@nospecializeinfer function Base.iterate((@nospecialize a::ZeroDimensionalArray), @nospecialize state::Any)
+    nothing
+end
+
 function construct_given_eltype(::Type{Arr}, ::Type{T}, v) where {Arr <: ZeroDimensionalArray, T}
     c = type_to_constructor_function(Arr)
     c(T, v)
