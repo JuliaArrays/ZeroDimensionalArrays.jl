@@ -67,12 +67,8 @@ function Base.setindex!(a::Box, x)
     a.v = x
 end
 
-Base.@nospecializeinfer function Base.isassigned(@nospecialize unused::ZeroDimensionalArray)
-    true
-end
-
-Base.@nospecializeinfer function Base.isassigned((@nospecialize unused::ZeroDimensionalArray), i::Int)
-    isone(i)
+Base.@nospecializeinfer function Base.isassigned((@nospecialize unused::ZeroDimensionalArray), i::Vararg{Integer})
+    all(isone, i)
 end
 
 function Base.only(a::ZeroDimensionalArray)
