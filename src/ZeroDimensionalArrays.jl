@@ -2,8 +2,8 @@ module ZeroDimensionalArrays
 
 export
     ZeroDimensionalArrayImmutable,
-    ZeroDimensionalArrayMutable,
-    ZeroDimensionalArrayMutableConstField
+    Box,
+    BoxConstField
 
 struct ZeroDimensionalArrayImmutable{T} <: AbstractArray{T, 0}
     v::T
@@ -12,7 +12,7 @@ struct ZeroDimensionalArrayImmutable{T} <: AbstractArray{T, 0}
     end
 end
 
-mutable struct ZeroDimensionalArrayMutable{T} <: AbstractArray{T, 0}
+mutable struct Box{T} <: AbstractArray{T, 0}
     v::T
     global function new_zero_dimensional_array_mutable(::Type{T}, v) where {T}
         new{T}(v)
@@ -22,7 +22,7 @@ mutable struct ZeroDimensionalArrayMutable{T} <: AbstractArray{T, 0}
     end
 end
 
-mutable struct ZeroDimensionalArrayMutableConstField{T} <: AbstractArray{T, 0}
+mutable struct BoxConstField{T} <: AbstractArray{T, 0}
     const v::T
     global function new_zero_dimensional_array_mutable_const_field(::Type{T}, v) where {T}
         new{T}(v)
@@ -31,16 +31,16 @@ end
 
 const ZeroDimensionalArray = Union{
     ZeroDimensionalArrayImmutable,
-    ZeroDimensionalArrayMutable,
-    ZeroDimensionalArrayMutableConstField,
+    Box,
+    BoxConstField,
 }
 
 function type_to_constructor_function(::Type{T}) where {T <: ZeroDimensionalArray}
     if T <: ZeroDimensionalArrayImmutable
         new_zero_dimensional_array_immutable
-    elseif T <: ZeroDimensionalArrayMutable
+    elseif T <: Box
         new_zero_dimensional_array_mutable
-    elseif T <: ZeroDimensionalArrayMutableConstField
+    elseif T <: BoxConstField
         new_zero_dimensional_array_mutable_const_field
     else
         throw(ArgumentError("no such constructor function"))
@@ -63,7 +63,7 @@ function Base.getindex(a::ZeroDimensionalArray)
     a.v
 end
 
-function Base.setindex!(a::ZeroDimensionalArrayMutable, x)
+function Base.setindex!(a::Box, x)
     a.v = x
 end
 
@@ -101,8 +101,8 @@ end
 
 for Arr ∈ (
     ZeroDimensionalArrayImmutable,
-    ZeroDimensionalArrayMutable,
-    ZeroDimensionalArrayMutableConstField,
+    Box,
+    BoxConstField,
 )
     @eval begin
         function Base.convert(::Type{$Arr}, a::AbstractArray{<:Any, 0})
@@ -120,7 +120,7 @@ for Arr ∈ (
     end
 end
 
-function ZeroDimensionalArrayMutable{T}() where {T}
+function Box{T}() where {T}
     new_zero_dimensional_array_mutable_undef(T)
 end
 
@@ -136,7 +136,7 @@ end
 # ```
 
 # https://github.com/JuliaLang/julia/issues/51753
-if isdefined(Base, :dataids) && hasmethod(Base.dataids, Tuple{ZeroDimensionalArrayMutable{Float32}})
+if isdefined(Base, :dataids) && hasmethod(Base.dataids, Tuple{Box{Float32}})
     function Base.dataids(a::ZeroDimensionalArray)
         Base.dataids(only(a))
     end
