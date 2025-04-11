@@ -31,7 +31,7 @@ The motivation for creating this package is:
     * `ZeroDimensionalArrayMutable` can be a good replacement. Examples:
         * make a `const` binding that's mutable:
           ```julia
-          const some_const_binding = ZeroDimensionalArrayMutable(fill(0.2))
+          const some_const_binding = ZeroDimensionalArrayMutable(0.2)
           ```
         * make a field within an immutable `struct` mutable (warning: it's usually more efficient to change the entire `struct` into a `mutable struct`)
           ```julia
@@ -45,11 +45,11 @@ The motivation for creating this package is:
         * https://github.com/JuliaLang/julia/issues/40369
         * https://discourse.julialang.org/t/dynamic-immutable-type/127168
 * to provide a wrapper type for treating a value as a scalar in broadcasting, something `Ref` is often used for:
-    * `ZeroDimensionalArrayImmutable` can be a good replacement. Construct one from its only element using the `wrap_in_0dim` function. Like this:
+    * `ZeroDimensionalArrayImmutable` can be a good replacement:
       ```julia-repl
       julia> using ZeroDimensionalArrays
 
-      julia> isa.(wrap_in_0dim([1,2,3]), [Array, Dict, Int])
+      julia> isa.(ZeroDimensionalArrayImmutable([1,2,3]), [Array, Dict, Int])
       3-element BitVector:
        1
        0

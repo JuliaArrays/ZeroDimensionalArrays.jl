@@ -13,25 +13,26 @@ using Aqua: Aqua
             ZeroDimensionalArrayMutable,
             ZeroDimensionalArrayMutableConstField,
         )
+            @test (@inferred Arr(0.3)) == (@inferred convert(Arr, fill(0.3)))
             @test isstructtype(Arr)
             @test Arr <: AbstractArray{<:Any, 0}
-            @test (@inferred Arr(fill(0.3))) isa Arr{Float64}
+            @test (@inferred Arr(0.3)) isa Arr{Float64}
             @test (@inferred convert(Arr, fill(0.3))) isa Arr{Float64}
-            @test (@inferred Arr{Float32}(fill(0.3))) isa Arr{Float32}
+            @test (@inferred Arr{Float32}(0.3)) isa Arr{Float32}
             @test (@inferred convert(Arr{Float32}, fill(0.3))) isa Arr{Float32}
-            @test () === @inferred propertynames(Arr(fill(0.3)))
-            @test only(fill(0.3)) === @inferred only(Arr(fill(0.3)))
-            @test fill(0.3)[] === @inferred Arr(fill(0.3))[]
-            @test fill(0.3)[1] === @inferred Arr(fill(0.3))[1]
-            @test @inferred isassigned(Arr(fill(0.3)))
-            @test @inferred isassigned(Arr(fill(0.3)), 1)
-            @test !(isassigned(Arr(fill(0.3)), 2))
-            @test (@inferred similar(Arr(fill(0.3)))) isa ZeroDimensionalArrayMutable{Float64}
-            @test (@inferred similar(Arr(fill(0.3)), Float32)) isa ZeroDimensionalArrayMutable{Float32}
-            @test fill(0.3) == Arr(fill(0.3))
-            @test Arr(fill(0.3)) == Arr(fill(0.3))
-            @test all(@inferred Arr(fill(0.3)) .== Arr(fill(0.3)))
-            @test (@inferred Arr(fill(0.3)) .+ [10, 20]) isa AbstractVector
+            @test () === @inferred propertynames(Arr(0.3))
+            @test only(fill(0.3)) === @inferred only(Arr(0.3))
+            @test fill(0.3)[] === @inferred Arr(0.3)[]
+            @test fill(0.3)[1] === @inferred Arr(0.3)[1]
+            @test @inferred isassigned(Arr(0.3))
+            @test @inferred isassigned(Arr(0.3), 1)
+            @test !(isassigned(Arr(0.3), 2))
+            @test (@inferred similar(Arr(0.3))) isa ZeroDimensionalArrayMutable{Float64}
+            @test (@inferred similar(Arr(0.3), Float32)) isa ZeroDimensionalArrayMutable{Float32}
+            @test fill(0.3) == Arr(0.3)
+            @test Arr(0.3) == Arr(0.3)
+            @test all(@inferred Arr(0.3) .== Arr(0.3))
+            @test (@inferred Arr(0.3) .+ [10, 20]) isa AbstractVector
         end
     end
 
@@ -40,13 +41,12 @@ using Aqua: Aqua
             @test @isdefined ZeroDimensionalArrayImmutable
             @test !ismutabletype(ZeroDimensionalArrayImmutable)
             @test isbitstype(ZeroDimensionalArrayImmutable{Float64})
-            @test ZeroDimensionalArrayImmutable(fill(7)) === @inferred wrap_in_0dim(7)
         end
         @testset "`ZeroDimensionalArrayMutable`" begin
             @test @isdefined ZeroDimensionalArrayMutable
             @test ismutabletype(ZeroDimensionalArrayMutable)
             @test (@inferred ZeroDimensionalArrayMutable{Float32}()) isa ZeroDimensionalArrayMutable{Float32}
-            @test let a = ZeroDimensionalArrayMutable(fill(0.3))
+            @test let a = ZeroDimensionalArrayMutable(0.3)
                 a[] = 0.7
                 only(a) === 0.7
             end
