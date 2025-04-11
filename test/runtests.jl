@@ -10,8 +10,8 @@ using Aqua: Aqua
     @testset "all array types joined" begin
         for Arr ∈ (
             ZeroDimensionalArrayImmutable,
-            ZeroDimensionalArrayMutable,
-            ZeroDimensionalArrayMutableConstField,
+            Box,
+            BoxConstField,
         )
             @test (@inferred Arr(0.3)) == (@inferred convert(Arr, fill(0.3)))
             @test isstructtype(Arr)
@@ -27,8 +27,8 @@ using Aqua: Aqua
             @test @inferred isassigned(Arr(0.3))
             @test @inferred isassigned(Arr(0.3), 1)
             @test !(isassigned(Arr(0.3), 2))
-            @test (@inferred similar(Arr(0.3))) isa ZeroDimensionalArrayMutable{Float64}
-            @test (@inferred similar(Arr(0.3), Float32)) isa ZeroDimensionalArrayMutable{Float32}
+            @test (@inferred similar(Arr(0.3))) isa Box{Float64}
+            @test (@inferred similar(Arr(0.3), Float32)) isa Box{Float32}
             @test fill(0.3) == Arr(0.3)
             @test Arr(0.3) == Arr(0.3)
             @test all(@inferred Arr(0.3) .== Arr(0.3))
@@ -42,18 +42,18 @@ using Aqua: Aqua
             @test !ismutabletype(ZeroDimensionalArrayImmutable)
             @test isbitstype(ZeroDimensionalArrayImmutable{Float64})
         end
-        @testset "`ZeroDimensionalArrayMutable`" begin
-            @test @isdefined ZeroDimensionalArrayMutable
-            @test ismutabletype(ZeroDimensionalArrayMutable)
-            @test (@inferred ZeroDimensionalArrayMutable{Float32}()) isa ZeroDimensionalArrayMutable{Float32}
-            @test let a = ZeroDimensionalArrayMutable(0.3)
+        @testset "`Box`" begin
+            @test @isdefined Box
+            @test ismutabletype(Box)
+            @test (@inferred Box{Float32}()) isa Box{Float32}
+            @test let a = Box(0.3)
                 a[] = 0.7
                 only(a) === 0.7
             end
         end
-        @testset "`ZeroDimensionalArrayMutableConstField`" begin
-            @test @isdefined ZeroDimensionalArrayMutableConstField
-            @test ismutabletype(ZeroDimensionalArrayMutableConstField)
+        @testset "`BoxConstField`" begin
+            @test @isdefined BoxConstField
+            @test ismutabletype(BoxConstField)
         end
     end
 end

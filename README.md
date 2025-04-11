@@ -13,10 +13,10 @@ Exports three zero-dimensional subtypes of `AbstractArray`:
     * declared with `struct`, not with `mutable struct`
     * does not support `setfield!`, or mutating the element otherwise
     * `isbits` when the element is `isbits`
-* `ZeroDimensionalArrayMutable`
+* `Box`
     * declared with `mutable struct`
     * supports `setfield!`
-* `ZeroDimensionalArrayMutableConstField`
+* `BoxConstField`
     * declared with `mutable struct`
     * does not support `setfield!`, or mutating the element otherwise
     * included for completeness, but not likely to be useful often
@@ -28,17 +28,17 @@ The motivation for creating this package is:
     * https://discourse.julialang.org/t/ref-is-not-a-concrete-type-poorly-documented/120375
     * https://discourse.julialang.org/t/ref-t-vs-base-refvalue-t/127886/
 * To provide "mutable wrapper" functionality, something `Ref` is often used for:
-    * `ZeroDimensionalArrayMutable` can be a good replacement. Examples:
+    * `Box` can be a good replacement. Examples:
         * make a `const` binding that's mutable:
           ```julia
-          const some_const_binding = ZeroDimensionalArrayMutable(0.2)
+          const some_const_binding = Box(0.2)
           ```
         * make a field within an immutable `struct` mutable (warning: it's usually more efficient to change the entire `struct` into a `mutable struct`)
           ```julia
           struct SomeImmutableType
               immutable_bool::Bool
               immutable_float::Float64
-              mutable_int::ZeroDimensionalArrayMutable{Int}
+              mutable_int::Box{Int}
           end
           ```
     * previous discussion:
