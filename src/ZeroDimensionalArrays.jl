@@ -95,6 +95,11 @@ function convert_from_other_array(::Type{Arr}, a::AbstractArray{<:Any, 0}) where
     convert_from_other_array_to_given_eltype(Arr, T, a)
 end
 
+function Base.copy(a::ZeroDimensionalArray)
+    Arr = typeof(a)
+    convert_from_other_array(Arr, a)
+end
+
 for Arr ∈ (
     ZeroDimArray,
     Box,

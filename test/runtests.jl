@@ -29,6 +29,11 @@ using Aqua: Aqua
             @test !(isassigned(Arr(0.3), 2))
             @test (@inferred similar(Arr(0.3))) isa Box{Float64}
             @test (@inferred similar(Arr(0.3), Float32)) isa Box{Float32}
+            @test (@inferred copy(Arr(0.3))) isa Arr{Float64}
+            @test (@inferred copy(Arr{AbstractFloat}(0.3))) isa Arr{AbstractFloat}
+            @test let a = Arr(0.3)
+                a == copy(a)
+            end
             @test fill(0.3) == Arr(0.3)
             @test Arr(0.3) == Arr(0.3)
             @test all(@inferred Arr(0.3) .== Arr(0.3))
