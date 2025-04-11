@@ -11,7 +11,7 @@ using Aqua: Aqua
         for Arr ∈ (
             ZeroDimArray,
             Box,
-            BoxConstField,
+            BoxConst,
         )
             @test (@inferred Arr(0.3)) == (@inferred convert(Arr, fill(0.3)))
             @test isstructtype(Arr)
@@ -51,9 +51,9 @@ using Aqua: Aqua
                 only(a) === 0.7
             end
         end
-        @testset "`BoxConstField`" begin
-            @test @isdefined BoxConstField
-            @test ismutabletype(BoxConstField)
+        @testset "`BoxConst`" begin
+            @test @isdefined BoxConst
+            @test ismutabletype(BoxConst)
         end
     end
 end
