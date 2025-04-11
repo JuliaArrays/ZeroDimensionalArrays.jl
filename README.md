@@ -9,7 +9,7 @@
 A small software package for the Julia programming language providing zero-dimensional array types. `Ref`-killer.
 
 Exports three zero-dimensional subtypes of `AbstractArray`:
-* `ZeroDimensionalArrayImmutable`
+* `ZeroDimArray`
     * declared with `struct`, not with `mutable struct`
     * does not support `setfield!`, or mutating the element otherwise
     * `isbits` when the element is `isbits`
@@ -45,11 +45,11 @@ The motivation for creating this package is:
         * https://github.com/JuliaLang/julia/issues/40369
         * https://discourse.julialang.org/t/dynamic-immutable-type/127168
 * to provide a wrapper type for treating a value as a scalar in broadcasting, something `Ref` is often used for:
-    * `ZeroDimensionalArrayImmutable` can be a good replacement:
+    * `ZeroDimArray` can be a good replacement:
       ```julia-repl
       julia> using ZeroDimensionalArrays
 
-      julia> isa.(ZeroDimensionalArrayImmutable([1,2,3]), [Array, Dict, Int])
+      julia> isa.(ZeroDimArray([1,2,3]), [Array, Dict, Int])
       3-element BitVector:
        1
        0

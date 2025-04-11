@@ -1,11 +1,11 @@
 module ZeroDimensionalArrays
 
 export
-    ZeroDimensionalArrayImmutable,
+    ZeroDimArray,
     Box,
     BoxConstField
 
-struct ZeroDimensionalArrayImmutable{T} <: AbstractArray{T, 0}
+struct ZeroDimArray{T} <: AbstractArray{T, 0}
     v::T
     global function new_zero_dimensional_array_immutable(::Type{T}, v) where {T}
         new{T}(v)
@@ -30,13 +30,13 @@ mutable struct BoxConstField{T} <: AbstractArray{T, 0}
 end
 
 const ZeroDimensionalArray = Union{
-    ZeroDimensionalArrayImmutable,
+    ZeroDimArray,
     Box,
     BoxConstField,
 }
 
 function type_to_constructor_function(::Type{T}) where {T <: ZeroDimensionalArray}
-    if T <: ZeroDimensionalArrayImmutable
+    if T <: ZeroDimArray
         new_zero_dimensional_array_immutable
     elseif T <: Box
         new_zero_dimensional_array_mutable
@@ -100,7 +100,7 @@ function convert_from_other_array(::Type{Arr}, a::AbstractArray{<:Any, 0}) where
 end
 
 for Arr ∈ (
-    ZeroDimensionalArrayImmutable,
+    ZeroDimArray,
     Box,
     BoxConstField,
 )
