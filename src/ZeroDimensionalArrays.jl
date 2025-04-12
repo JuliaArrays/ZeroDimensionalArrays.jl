@@ -75,6 +75,10 @@ function Base.only(a::ZeroDimensionalArray)
     a[]
 end
 
+function Base.last(a::ZeroDimensionalArray)
+    a[]
+end
+
 function Base.iterate(a::ZeroDimensionalArray)
     (a[], nothing)
 end

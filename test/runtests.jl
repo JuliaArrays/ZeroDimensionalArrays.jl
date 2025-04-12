@@ -23,6 +23,7 @@ using Aqua: Aqua
             @test (@inferred convert(Arr{Float32}, fill(x))) isa Arr{Float32}
             @test () === @inferred propertynames(Arr(x))
             @test only(fill(x)) === @inferred only(Arr(x))
+            @test last(fill(x)) === @inferred last(Arr(x))
             @test fill(x)[] === @inferred Arr(x)[]
             @test fill(x)[1] === @inferred Arr(x)[1]
             @test @inferred isassigned(Arr(x))
