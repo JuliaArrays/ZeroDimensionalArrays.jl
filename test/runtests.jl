@@ -27,6 +27,12 @@ using Aqua: Aqua
             @test @inferred isassigned(Arr(0.3))
             @test @inferred isassigned(Arr(0.3), 1)
             @test !(isassigned(Arr(0.3), 2))
+            @test (@inferred iterate(Arr(0.3))) isa Tuple{Float64, Any}
+            @test 0.3 === first(iterate(Arr(0.3)))
+            @test let a = Arr(0.3)
+                nothing === @inferred iterate(a, last(iterate(a)))
+            end
+            @test nothing === @inferred iterate(Arr(0.3), nothing)
             @test (@inferred similar(Arr(0.3))) isa Box{Float64}
             @test (@inferred similar(Arr(0.3), Float32)) isa Box{Float32}
             @test (@inferred copy(Arr(0.3))) isa Arr{Float64}
