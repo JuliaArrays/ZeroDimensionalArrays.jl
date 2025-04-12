@@ -28,12 +28,11 @@ using Aqua: Aqua
             @test @inferred isassigned(Arr(x))
             @test @inferred isassigned(Arr(x), 1)
             @test !(isassigned(Arr(x), 2))
-            @test (@inferred iterate(Arr(x))) isa Tuple{typeof(x), Any}
-            @test x === first(iterate(Arr(x)))
-            @test let a = Arr(x)
-                nothing === @inferred iterate(a, last(iterate(a)))
+            for it ∈ (Arr(x), Iterators.reverse(Arr(x)))
+                @test (@inferred iterate(it)) isa Tuple{typeof(x), Any}
+                @test x === first(iterate(it))
+                @test nothing === @inferred iterate(it, last(iterate(it)))
             end
-            @test nothing === @inferred iterate(Arr(x), nothing)
             @test (@inferred similar(Arr(x))) isa Box{typeof(x)}
             @test (@inferred similar(Arr(x), Float32)) isa Box{Float32}
             @test (@inferred copy(Arr(x))) isa Arr{typeof(x)}
