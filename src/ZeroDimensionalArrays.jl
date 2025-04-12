@@ -82,6 +82,14 @@ Base.@nospecializeinfer function Base.iterate((@nospecialize a::ZeroDimensionalA
     nothing
 end
 
+function Base.iterate(r::Iterators.Reverse{<:ZeroDimensionalArray})
+    a = Iterators.reverse(r)
+    iterate(a)
+end
+Base.@nospecializeinfer function Base.iterate((@nospecialize a::Iterators.Reverse{<:ZeroDimensionalArray}), @nospecialize state::Any)
+    nothing
+end
+
 function construct_given_eltype(::Type{Arr}, ::Type{T}, v) where {Arr <: ZeroDimensionalArray, T}
     c = type_to_constructor_function(Arr)
     c(T, v)
