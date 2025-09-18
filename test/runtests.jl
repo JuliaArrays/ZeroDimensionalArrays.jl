@@ -7,6 +7,12 @@ using Aqua: Aqua
         Aqua.test_all(ZeroDimensionalArrays)
     end
 
+    @testset "common abstract supertype" begin
+        @test !(AbstractArray{<:Any, 0} <: typejoin(Box, BoxConst))
+        @test !(AbstractArray{<:Any, 0} <: typejoin(Box, ZeroDimArray))
+        @test !(AbstractArray{<:Any, 0} <: typejoin(BoxConst, ZeroDimArray))
+    end
+
     @testset "all array types joined" begin
         x = 0.3
         for Arr ∈ (

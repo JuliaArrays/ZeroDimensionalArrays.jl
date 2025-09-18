@@ -5,14 +5,16 @@ export
     Box,
     BoxConst
 
-struct ZeroDimArray{T} <: AbstractArray{T, 0}
+abstract type AbstractZeroDimensionalArray{T} <: AbstractArray{T, 0} end
+
+struct ZeroDimArray{T} <: AbstractZeroDimensionalArray{T}
     v::T
     global function new_zero_dimensional_array_immutable(::Type{T}, v) where {T}
         new{T}(v)
     end
 end
 
-mutable struct Box{T} <: AbstractArray{T, 0}
+mutable struct Box{T} <: AbstractZeroDimensionalArray{T}
     v::T
     global function new_zero_dimensional_array_mutable(::Type{T}, v) where {T}
         new{T}(v)
@@ -22,7 +24,7 @@ mutable struct Box{T} <: AbstractArray{T, 0}
     end
 end
 
-mutable struct BoxConst{T} <: AbstractArray{T, 0}
+mutable struct BoxConst{T} <: AbstractZeroDimensionalArray{T}
     const v::T
     global function new_zero_dimensional_array_mutable_const_field(::Type{T}, v) where {T}
         new{T}(v)
