@@ -11,22 +11,24 @@ using Aqua: Aqua
         @test !(AbstractArray{<:Any, 0} <: typejoin(Box, BoxConst))
         @test !(AbstractArray{<:Any, 0} <: typejoin(Box, ZeroDimArray))
         @test !(AbstractArray{<:Any, 0} <: typejoin(BoxConst, ZeroDimArray))
+        @test !(AbstractArray{<:Any, 0} <: typejoin(BoxConst, ZeroDimArrayInTypeParameter))
     end
 
     @testset "all array types joined" begin
         x = 0.3
         for Arr ∈ (
             ZeroDimArray,
+            ZeroDimArrayInTypeParameter,
             Box,
             BoxConst,
         )
-            @test (@inferred Arr(x)) == (@inferred convert(Arr, fill(x)))
+            @test Arr(x) == convert(Arr, fill(x))
             @test isstructtype(Arr)
             @test Arr <: AbstractArray{<:Any, 0}
-            @test (@inferred Arr(x)) isa Arr{typeof(x)}
-            @test (@inferred convert(Arr, fill(x))) isa Arr{typeof(x)}
-            @test (@inferred Arr{Float32}(x)) isa Arr{Float32}
-            @test (@inferred convert(Arr{Float32}, fill(x))) isa Arr{Float32}
+            @test Arr(x) isa Arr{typeof(x)}
+            @test convert(Arr, fill(x)) isa Arr{typeof(x)}
+            @test Arr{Float32}(x) isa Arr{Float32}
+            @test convert(Arr{Float32}, fill(x)) isa Arr{Float32}
             @test () === @inferred propertynames(Arr(x))
             @test only(fill(x)) === @inferred only(Arr(x))
             @test last(fill(x)) === @inferred last(Arr(x))
@@ -58,11 +60,39 @@ using Aqua: Aqua
         end
     end
 
+    @testset "all array types joined: concrete return type inference" begin
+        @testset "`ZeroDimArrayInTypeParameter`" begin
+            @test ((@inferred (() -> ZeroDimArrayInTypeParameter(0.3))()); true;)
+            @test ((@inferred (() -> ZeroDimArrayInTypeParameter{Float32}(0.3))()); true;)
+        end
+        @testset "other types" begin
+            x = 0.3
+            for Arr ∈ (
+                ZeroDimArray,
+                Box,
+                BoxConst,
+            )
+                @test ((@inferred Arr(x)); true;)
+                @test ((@inferred Arr{Float32}(x)); true;)
+                @test ((@inferred convert(Arr, fill(x))); true;)
+                @test ((@inferred convert(Arr{Float32}, fill(x))); true;)
+            end
+        end
+    end
+
     @testset "each array type on its own" begin
         @testset "`ZeroDimArray`" begin
             @test @isdefined ZeroDimArray
             @test !ismutabletype(ZeroDimArray)
             @test isbitstype(ZeroDimArray{Float64})
+        end
+        @testset "`ZeroDimArrayInTypeParameter`" begin
+            @test @isdefined ZeroDimArrayInTypeParameter
+            @test !ismutabletype(ZeroDimArrayInTypeParameter)
+            @test isbitstype(ZeroDimArrayInTypeParameter{Float64, 0.7})
+            @test Base.issingletontype(ZeroDimArrayInTypeParameter{Float64, 0.7})
+            @test Int == eltype(ZeroDimArrayInTypeParameter(7))
+            @test Type{Float32} == eltype(ZeroDimArrayInTypeParameter(Float32))
         end
         @testset "`Box`" begin
             @test @isdefined Box
