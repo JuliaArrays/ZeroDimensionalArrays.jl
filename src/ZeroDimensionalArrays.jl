@@ -63,20 +63,21 @@ function Base.getindex(a::ZeroDimensionalArray)
     a.v
 end
 
+# This method is redundant for correctness, but adding it helps achieve constprop, which
+# helps `only(::ZeroDimensionalArray)` and `last(::ZeroDimensionalArray)`, for example.
+Base.@constprop :aggressive function Base.getindex(a::ZeroDimensionalArray, i::Int)
+    if !isone(i)
+        throw(BoundsError())
+    end
+    a[]
+end
+
 function Base.setindex!(a::Box, x)
     a.v = x
 end
 
 Base.@nospecializeinfer function Base.isassigned((@nospecialize unused::ZeroDimensionalArray), i::Vararg{Integer})
     all(isone, i)
-end
-
-function Base.only(a::ZeroDimensionalArray)
-    a[]
-end
-
-function Base.last(a::ZeroDimensionalArray)
-    a[]
 end
 
 function Base.iterate(a::ZeroDimensionalArray)
