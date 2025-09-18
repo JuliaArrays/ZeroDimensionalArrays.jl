@@ -8,6 +8,44 @@ export
 
 abstract type AbstractZeroDimensionalArray{T} <: AbstractArray{T, 0} end
 
+"""
+    ZeroDimArray
+
+A collection type storing exactly one element. More precisely, a zero-dimensional
+array, subtyping `AbstractArray{T, 0} where {T}`.
+
+* Has a single type parameter:
+
+    * `T`, the element type
+
+* Construct like so:
+
+    * `ZeroDimArray(element)`
+
+    * `ZeroDimArray{T}(element)`
+
+* Convert from other array types with `convert`.
+
+* Access the element using `getindex`. Julia supports the square bracket syntax for
+  `getindex`: `array[]` is equivalent to `getindex(array)`.
+
+* After a `ZeroDimArray` is constructed, it is not possible to change the value of
+  its element.
+
+* Regarding layout in memory, a `ZeroDimArray` is a copy of its element.
+
+* For any `x`, `ZeroDimArray(x) === ZeroDimArray(x)` holds.
+
+* For any `x`, `isbits(ZeroDimArray(x))` as long as `isbits(x)`.
+
+Other exported collection types:
+
+* [`Box`](@ref)
+
+* [`BoxConst`](@ref)
+
+* [`ZeroDimArrayInTypeParameter`](@ref)
+"""
 struct ZeroDimArray{T} <: AbstractZeroDimensionalArray{T}
     v::T
     global function new_zero_dimensional_array_immutable(::Type{T}, v) where {T}
@@ -15,6 +53,38 @@ struct ZeroDimArray{T} <: AbstractZeroDimensionalArray{T}
     end
 end
 
+"""
+    Box
+
+A collection type storing exactly one element. More precisely, a zero-dimensional
+array, subtyping `AbstractArray{T, 0} where {T}`.
+
+* Has a single type parameter:
+
+    * `T`, the element type
+
+* Construct like so:
+
+    * `Box(element)`
+
+    * `Box{T}(element)`
+
+* Convert from other array types with `convert`.
+
+* After a `Box` is constructed, change the value of its element using `setindex!`.
+  Julia supports the square bracket syntax for `setindex!`: `array[] = element` is
+  equivalent to `setindex!(array, element)`.
+
+* Regarding layout in memory, a `Box` is a reference to its element.
+
+Other exported collection types:
+
+* [`BoxConst`](@ref)
+
+* [`ZeroDimArray`](@ref)
+
+* [`ZeroDimArrayInTypeParameter`](@ref)
+"""
 mutable struct Box{T} <: AbstractZeroDimensionalArray{T}
     v::T
     global function new_zero_dimensional_array_mutable(::Type{T}, v) where {T}
@@ -25,6 +95,40 @@ mutable struct Box{T} <: AbstractZeroDimensionalArray{T}
     end
 end
 
+"""
+    BoxConst
+
+A collection type storing exactly one element. More precisely, a zero-dimensional
+array, subtyping `AbstractArray{T, 0} where {T}`.
+
+* Has a single type parameter:
+
+    * `T`, the element type
+
+* Construct like so:
+
+    * `BoxConst(element)`
+
+    * `BoxConst{T}(element)`
+
+* Convert from other array types with `convert`.
+
+* Access the element using `getindex`. Julia supports the square bracket syntax for
+  `getindex`: `array[]` is equivalent to `getindex(array)`.
+
+* After a `BoxConst` is constructed, it is not possible to change the value of
+  its element.
+
+* Regarding layout in memory, a `BoxConst` is a reference to its element.
+
+Other exported collection types:
+
+* [`Box`](@ref)
+
+* [`ZeroDimArray`](@ref)
+
+* [`ZeroDimArrayInTypeParameter`](@ref)
+"""
 mutable struct BoxConst{T} <: AbstractZeroDimensionalArray{T}
     const v::T
     global function new_zero_dimensional_array_mutable_const_field(::Type{T}, v) where {T}
@@ -32,6 +136,55 @@ mutable struct BoxConst{T} <: AbstractZeroDimensionalArray{T}
     end
 end
 
+"""
+    ZeroDimArrayInTypeParameter
+
+A collection type storing exactly one element. More precisely, a zero-dimensional
+array, subtyping `AbstractArray{T, 0} where {T}`.
+
+* Has two type parameters:
+
+    * `T`, the element type
+
+    * `Value`, the element
+
+* Construct like so:
+
+    * `ZeroDimArrayInTypeParameter(element)`
+
+    * `ZeroDimArrayInTypeParameter{T}(element)`
+
+* Convert from other array types with `convert`.
+
+* Access the element using `getindex`. Julia supports the square bracket syntax for
+  `getindex`: `array[]` is equivalent to `getindex(array)`.
+
+* After a `ZeroDimArrayInTypeParameter` is constructed, it is not possible to
+  change the value of its element.
+
+* As a `ZeroDimArrayInTypeParameter` stores its element in its type parameter, a
+  call like `ZeroDimArrayInTypeParameter(x)` might throw in type application if
+  Julia is not able to use `x` as a type parameter.
+
+* For any `a`, `iszero(sizeof(a))` as long as `a isa ZeroDimArrayInTypeParameter`.
+
+* For any `x`, `ZeroDimArrayInTypeParameter(x) === ZeroDimArrayInTypeParameter(x)`
+  holds.
+
+* For any `x`, `isbits(ZeroDimArrayInTypeParameter(x))` as long as
+  `ZeroDimArrayInTypeParameter(x)` returns.
+
+* For any `x`, `Base.issingletontype(typeof(ZeroDimArrayInTypeParameter(x)))` as
+  long as `ZeroDimArrayInTypeParameter(x)` returns.
+
+Other exported collection types:
+
+* [`Box`](@ref)
+
+* [`BoxConst`](@ref)
+
+* [`ZeroDimArray`](@ref)
+"""
 struct ZeroDimArrayInTypeParameter{T, Value} <: AbstractZeroDimensionalArray{T}
     global function new_zero_dimensional_array_in_type_parameter(::Type{T}, v) where {T}
         u = if v isa T
