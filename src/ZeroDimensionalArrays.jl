@@ -2,6 +2,7 @@ module ZeroDimensionalArrays
 
 export
     ZeroDimArray,
+    ZeroDimArrayInTypeParameter,
     Box,
     BoxConst
 
@@ -31,8 +32,20 @@ mutable struct BoxConst{T} <: AbstractZeroDimensionalArray{T}
     end
 end
 
+struct ZeroDimArrayInTypeParameter{T, Value} <: AbstractZeroDimensionalArray{T}
+    global function new_zero_dimensional_array_in_type_parameter(::Type{T}, v) where {T}
+        u = if v isa T
+            v
+        else
+            convert(T, v)::T
+        end
+        new{T, u}()
+    end
+end
+
 const ZeroDimensionalArrayCanNotMutateElement = Union{
     ZeroDimArray,
+    ZeroDimArrayInTypeParameter,
     BoxConst,
 }
 
@@ -45,6 +58,8 @@ function type_to_constructor_function(::Type{T}) where {T <: ZeroDimensionalArra
     local ret
     if T <: ZeroDimArray
         ret = new_zero_dimensional_array_immutable
+    elseif T <: ZeroDimArrayInTypeParameter
+        ret = new_zero_dimensional_array_in_type_parameter
     elseif T <: Box
         ret = new_zero_dimensional_array_mutable
     elseif T <: BoxConst
@@ -66,7 +81,16 @@ Base.@nospecializeinfer function Base.size(@nospecialize unused::ZeroDimensional
 end
 
 function Base.getindex(a::ZeroDimensionalArray)
-    a.v
+    function get_param(::ZeroDimArrayInTypeParameter{<:Any, Value}) where {Value}
+        Value
+    end
+    local ret
+    if a isa Union{ZeroDimArray, Box, BoxConst}
+        ret = a.v
+    elseif a isa ZeroDimArrayInTypeParameter
+        ret = get_param(a)
+    end
+    ret
 end
 
 # This method is redundant for correctness, but adding it helps achieve constprop, which
@@ -107,7 +131,11 @@ function construct_given_eltype(::Type{Arr}, ::Type{T}, v) where {Arr <: ZeroDim
 end
 
 function construct(::Type{Arr}, v) where {Arr <: ZeroDimensionalArray}
-    T = typeof(v)
+    T = if (Arr <: ZeroDimArrayInTypeParameter) && (v isa Type)
+        Type{v}
+    else
+        typeof(v)
+    end
     construct_given_eltype(Arr, T, v)
 end
 
@@ -128,6 +156,7 @@ end
 
 for Arr ∈ (
     ZeroDimArray,
+    ZeroDimArrayInTypeParameter,
     Box,
     BoxConst,
 )
