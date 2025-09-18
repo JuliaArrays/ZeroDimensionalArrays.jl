@@ -36,15 +36,15 @@ const ZeroDimensionalArray = Union{
 }
 
 function type_to_constructor_function(::Type{T}) where {T <: ZeroDimensionalArray}
+    local ret
     if T <: ZeroDimArray
-        new_zero_dimensional_array_immutable
+        ret = new_zero_dimensional_array_immutable
     elseif T <: Box
-        new_zero_dimensional_array_mutable
+        ret = new_zero_dimensional_array_mutable
     elseif T <: BoxConst
-        new_zero_dimensional_array_mutable_const_field
-    else
-        throw(ArgumentError("no such constructor function"))
+        ret = new_zero_dimensional_array_mutable_const_field
     end
+    ret
 end
 
 Base.@nospecializeinfer function Base.propertynames(
