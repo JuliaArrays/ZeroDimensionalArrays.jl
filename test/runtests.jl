@@ -45,6 +45,10 @@ using Aqua: Aqua
             @test Arr(x) == Arr(x)
             @test all(@inferred Arr(x) .== Arr(x))
             @test (@inferred Arr(x) .+ [10, 20]) isa AbstractVector
+            let oob_exception_type = Exception
+                @test_throws oob_exception_type Arr(x)[0]
+                @test_throws oob_exception_type Arr(x)[2]
+            end
         end
     end
 
