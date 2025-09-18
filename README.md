@@ -3,6 +3,7 @@
 [![Build Status](https://github.com/JuliaArrays/ZeroDimensionalArrays.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/JuliaArrays/ZeroDimensionalArrays.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![Package version](https://juliahub.com/docs/General/ZeroDimensionalArrays/stable/version.svg)](https://juliahub.com/ui/Packages/General/ZeroDimensionalArrays)
 [![Package dependencies](https://juliahub.com/docs/General/ZeroDimensionalArrays/stable/deps.svg)](https://juliahub.com/ui/Packages/General/ZeroDimensionalArrays?t=2)
+[![Coverage](https://codecov.io/gh/JuliaArrays/ZeroDimensionalArrays.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/JuliaArrays/ZeroDimensionalArrays.jl)
 [![PkgEval](https://JuliaCI.github.io/NanosoldierReports/pkgeval_badges/Z/ZeroDimensionalArrays.svg)](https://JuliaCI.github.io/NanosoldierReports/pkgeval_badges/Z/ZeroDimensionalArrays.html)
 [![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 
