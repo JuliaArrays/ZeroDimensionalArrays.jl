@@ -29,10 +29,14 @@ mutable struct BoxConst{T} <: AbstractArray{T, 0}
     end
 end
 
-const ZeroDimensionalArray = Union{
+const ZeroDimensionalArrayCanNotMutateElement = Union{
     ZeroDimArray,
-    Box,
     BoxConst,
+}
+
+const ZeroDimensionalArray = Union{
+    ZeroDimensionalArrayCanNotMutateElement,
+    Box,
 }
 
 function type_to_constructor_function(::Type{T}) where {T <: ZeroDimensionalArray}
@@ -158,8 +162,8 @@ end
 
 # https://github.com/JuliaLang/julia/issues/51753
 if isdefined(Base, :dataids) && hasmethod(Base.dataids, Tuple{Box{Float32}})
-    function Base.dataids(a::ZeroDimensionalArray)
-        Base.dataids(only(a))
+    Base.@nospecializeinfer function Base.dataids((@nospecialize a::ZeroDimensionalArrayCanNotMutateElement),)
+        ()
     end
 end
 
