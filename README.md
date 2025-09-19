@@ -13,37 +13,13 @@ Exports these zero-dimensional subtypes of `AbstractArray`, differing on topics 
 
 * `ZeroDimArray`
 
-    * declared with `struct`, not with `mutable struct`
-
-    * does not support `setfield!`, or mutating the element otherwise
-
-    * `isbits` when the element is `isbits`
-
 * `Box`
-
-    * declared with `mutable struct`
-
-    * supports `setfield!` for mutating the element
-
-    * acts as a reference to its element
 
 * `BoxConst`
 
-    * declared with `mutable struct`
-
-    * does not support `setfield!`, or mutating the element otherwise
-
-    * acts as a reference to its element
-
 * `ZeroDimArrayInTypeParameter`
 
-    * declared with `struct`, not with `mutable struct`
-
-    * does not support `setfield!`, or mutating the element otherwise
-
-    * each concrete subtype is `isbits` and is a singleton type
-
-    * the element is stored in a type parameter instead of in a field
+See their doc strings for more info!
 
 Any zero-dimensional array is an iterator containing exactly one element (this follows from the zero-dimensional shape). `Ref`, too, is a zero-dimensional iterator, however it's not an array. Even though `Ref` supports being indexed like a zero-dimensional array is commonly indexed, without an index: `x[]`.
 
