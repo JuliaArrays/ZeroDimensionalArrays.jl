@@ -1,6 +1,5 @@
 using ZeroDimensionalArrays
 using Test
-using Aqua: Aqua
 
 @testset "ZeroDimensionalArrays.jl" begin
     @testset "common abstract supertype" begin
@@ -108,8 +107,10 @@ using Aqua: Aqua
             @test ismutabletype(BoxConst)
         end
     end
+end
 
-    @testset "Code quality (Aqua.jl)" begin
-        Aqua.test_all(ZeroDimensionalArrays)
-    end
+using Aqua: Aqua
+
+@testset "Code quality (Aqua.jl)" begin
+    Aqua.test_all(ZeroDimensionalArrays)
 end
