@@ -98,6 +98,10 @@ using Aqua: Aqua
                 a[] = 0.7
                 only(a) === 0.7
             end
+            @test let a = Box(Int)
+                a[] = Float32
+                only(a) === Float32
+            end
         end
         @testset "`BoxConst`" begin
             @test @isdefined BoxConst
