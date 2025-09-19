@@ -3,10 +3,6 @@ using Test
 using Aqua: Aqua
 
 @testset "ZeroDimensionalArrays.jl" begin
-    @testset "Code quality (Aqua.jl)" begin
-        Aqua.test_all(ZeroDimensionalArrays)
-    end
-
     @testset "common abstract supertype" begin
         @test !(AbstractArray{<:Any, 0} <: typejoin(Box, BoxConst))
         @test !(AbstractArray{<:Any, 0} <: typejoin(Box, ZeroDimArray))
@@ -107,5 +103,9 @@ using Aqua: Aqua
             @test @isdefined BoxConst
             @test ismutabletype(BoxConst)
         end
+    end
+
+    @testset "Code quality (Aqua.jl)" begin
+        Aqua.test_all(ZeroDimensionalArrays)
     end
 end
