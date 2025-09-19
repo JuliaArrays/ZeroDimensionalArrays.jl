@@ -284,7 +284,7 @@ function construct_given_eltype(::Type{Arr}, ::Type{T}, v) where {Arr <: ZeroDim
 end
 
 function construct(::Type{Arr}, v) where {Arr <: ZeroDimensionalArray}
-    T = if (Arr <: ZeroDimArrayInTypeParameter) && (v isa Type)
+    T = if v isa Type
         Type{v}
     else
         typeof(v)
