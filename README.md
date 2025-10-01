@@ -19,6 +19,8 @@ Exports these zero-dimensional subtypes of `AbstractArray`, differing on topics 
 
 * `ZeroDimArrayInTypeParameter`
 
+* `Atomic`
+
 See their doc strings for more info!
 
 Any zero-dimensional array is an iterator containing exactly one element (this follows from the zero-dimensional shape). `Ref`, too, is a zero-dimensional iterator, however it's not an array. Even though `Ref` supports being indexed like a zero-dimensional array is commonly indexed, without an index: `x[]`.

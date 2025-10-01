@@ -1,6 +1,7 @@
 module ZeroDimensionalArrays
 
 export
+    Atomic,
     ZeroDimArray,
     ZeroDimArrayInTypeParameter,
     Box,
@@ -40,6 +41,8 @@ array, subtyping `AbstractArray{T, 0} where {T}`.
 
 Other exported collection types:
 
+* [`Atomic`](@ref)
+
 * [`Box`](@ref)
 
 * [`BoxConst`](@ref)
@@ -78,6 +81,8 @@ array, subtyping `AbstractArray{T, 0} where {T}`.
 * Regarding layout in memory, a `Box` is a reference to its element.
 
 Other exported collection types:
+
+* [`Atomic`](@ref)
 
 * [`BoxConst`](@ref)
 
@@ -122,6 +127,8 @@ array, subtyping `AbstractArray{T, 0} where {T}`.
 * Regarding layout in memory, a `BoxConst` is a reference to its element.
 
 Other exported collection types:
+
+* [`Atomic`](@ref)
 
 * [`Box`](@ref)
 
@@ -179,6 +186,8 @@ array, subtyping `AbstractArray{T, 0} where {T}`.
 
 Other exported collection types:
 
+* [`Atomic`](@ref)
+
 * [`Box`](@ref)
 
 * [`BoxConst`](@ref)
@@ -196,6 +205,51 @@ struct ZeroDimArrayInTypeParameter{T, Value} <: AbstractZeroDimensionalArray{T}
     end
 end
 
+"""
+    Atomic
+
+A collection type storing exactly one element. More precisely, a zero-dimensional
+array, subtyping `AbstractArray{T, 0} where {T}`.
+
+* Has a single type parameter:
+
+    * `T`, the element type
+
+* Construct like so:
+
+    * `Atomic(element)`
+
+    * `Atomic{T}(element)`
+
+* Convert from other array types with `convert`.
+
+* After a `Atomic` is constructed, change the value of its element using `setindex!`.
+  Julia supports the square bracket syntax for `setindex!`: `array[] = element` is
+  equivalent to `setindex!(array, element)`.
+
+* Regarding layout in memory, a `Atomic` is a reference to its element.
+
+Other exported collection types:
+
+* [`Box`](@ref)
+
+* [`BoxConst`](@ref)
+
+* [`ZeroDimArray`](@ref)
+
+* [`ZeroDimArrayInTypeParameter`](@ref)
+
+"""
+mutable struct Atomic{T} <: AbstractZeroDimensionalArray{T}
+    @atomic v::T
+    global function new_zero_dimensional_array_atomic(::Type{T}, v) where {T}
+        new{T}(v)
+    end
+    global function new_zero_dimensional_array_atomic_undef(::Type{T}) where {T}
+        new{T}()
+    end
+end
+
 const ZeroDimensionalArrayCanNotMutateElement = Union{
     ZeroDimArray,
     ZeroDimArrayInTypeParameter,
@@ -205,6 +259,7 @@ const ZeroDimensionalArrayCanNotMutateElement = Union{
 const ZeroDimensionalArray = Union{
     ZeroDimensionalArrayCanNotMutateElement,
     Box,
+    Atomic,
 }
 
 function type_to_constructor_function(::Type{T}) where {T <: ZeroDimensionalArray}
@@ -217,6 +272,8 @@ function type_to_constructor_function(::Type{T}) where {T <: ZeroDimensionalArra
         ret = new_zero_dimensional_array_mutable
     elseif T <: BoxConst
         ret = new_zero_dimensional_array_mutable_const_field
+    elseif T <: Atomic
+        ret = new_zero_dimensional_array_atomic
     end
     ret
 end
@@ -245,6 +302,9 @@ function Base.getindex(a::ZeroDimensionalArray)
     end
     ret
 end
+function Base.getindex(a::Atomic)
+    @atomic a.v
+end
 
 # This method is redundant for correctness, but adding it helps achieve constprop, which
 # helps `only(::ZeroDimensionalArray)` and `last(::ZeroDimensionalArray)`, for example.
@@ -258,6 +318,12 @@ end
 function Base.setindex!(a::Box, x)
     a.v = x
 end
+
+function Base.setindex!(a::Atomic, x)
+    @atomic a.v = x
+end
+
+
 
 Base.@nospecializeinfer function Base.isassigned((@nospecialize unused::ZeroDimensionalArray), i::Vararg{Integer})
     all(isone, i)
@@ -284,7 +350,7 @@ function construct_given_eltype(::Type{Arr}, ::Type{T}, v) where {Arr <: ZeroDim
 end
 
 function construct(::Type{Arr}, v) where {Arr <: ZeroDimensionalArray}
-    T = if (!(Arr <: Box)) && (v isa Type)
+    T = if (!(Arr <: Union{Box, Atomic})) && (v isa Type)
         Type{v}
     else
         typeof(v)
@@ -308,6 +374,7 @@ function Base.copy(a::ZeroDimensionalArray)
 end
 
 for Arr ∈ (
+    Atomic,
     ZeroDimArray,
     ZeroDimArrayInTypeParameter,
     Box,
@@ -327,6 +394,10 @@ for Arr ∈ (
             construct_given_eltype($Arr, T, v)
         end
     end
+end
+
+function Atomic{T}() where {T}
+    new_zero_dimensional_array_atomic_undef(T)
 end
 
 function Box{T}() where {T}

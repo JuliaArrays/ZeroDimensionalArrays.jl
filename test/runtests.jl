@@ -12,6 +12,7 @@ using Test
     @testset "all array types joined" begin
         x = 0.3
         for Arr ∈ (
+            Atomic,
             ZeroDimArray,
             ZeroDimArrayInTypeParameter,
             Box,
@@ -102,6 +103,20 @@ using Test
                 only(a) === Float32
             end
         end
+        @testset "`Atomic`" begin
+            @test @isdefined Atomic
+            @test ismutabletype(Atomic)
+            @test (@inferred Atomic{Float32}()) isa Atomic{Float32}
+            @test let a = Atomic(0.3)
+                a[] = 0.7
+                only(a) === 0.7
+            end
+            @test let a = Atomic(Int)
+                a[] = Float32
+                only(a) === Float32
+            end
+        end
+
         @testset "`BoxConst`" begin
             @test @isdefined BoxConst
             @test ismutabletype(BoxConst)
