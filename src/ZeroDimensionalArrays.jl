@@ -295,12 +295,15 @@ function Base.getindex(a::ZeroDimensionalArray)
         Value
     end
     local ret
-    if a isa Union{ZeroDimArray, Box, BoxConst, Atomic}
+    if a isa Union{ZeroDimArray, Box, BoxConst}
         ret = a.v
     elseif a isa ZeroDimArrayInTypeParameter
         ret = get_param(a)
     end
     ret
+end
+function Base.getindex(a::Atomic)
+    @atomic a.v
 end
 
 # This method is redundant for correctness, but adding it helps achieve constprop, which
